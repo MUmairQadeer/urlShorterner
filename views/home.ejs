@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener | Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="/" class="logo">ShortURL</a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <!-- Assuming logout or user info might be here later, keeping it simple for now -->
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div class="hero-section">
+                <h1>Shorten Your Links</h1>
+                <p class="subtitle">A premium tool to make your URLs concise and trackable.</p>
+
+                <% if(locals.id) {%>
+                    <div class="success-message">
+                        URL Generated: <strong id="generated-url">http://localhost:8001/<%= id %></strong>
+                        <button onclick="copyToClipboard()" class="copy-btn">Copy</button>
+                    </div>
+                    <% }%>
+
+                        <div class="glass-card">
+                            <form method="POST" action="/url">
+                                <div class="form-group">
+                                    <label>Enter Your Original URL</label>
+                                    <input type="url" name="url" placeholder="https://example.com/very-long-url"
+                                        required>
+                                </div>
+                                <button type="submit">Generate Short Link</button>
+                            </form>
+                        </div>
+            </div>
+
+            <script>
+                function copyToClipboard() {
+                    const urlText = document.getElementById('generated-url').innerText;
+                    navigator.clipboard.writeText(urlText).then(() => {
+                        const btn = document.querySelector('.copy-btn');
+                        btn.innerText = 'Copied!';
+                        setTimeout(() => {
+                            btn.innerText = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+                }
+            </script>
+
+            <style>
+                .copy-btn {
+                    padding: 0.4rem 0.8rem;
+                    margin-left: 1rem;
+                    background: rgba(16, 185, 129, 0.2);
+                    border: 1px solid rgba(16, 185, 129, 0.4);
+                    color: #34d399;
+                    font-size: 0.8rem;
+                    width: auto;
+                    display: inline-block;
+                }
+
+                .copy-btn:hover {
+                    background: rgba(16, 185, 129, 0.3);
+                }
+            </style>
+
+            <% if (locals.urls) { %>
+                <div class="glass-card">
+                    <h2>Your Links</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>ShortID</th>
+                                    <th>Redirect</th>
+                                    <th>Clicks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% urls.forEach((url ,index)=> {%>
+                                    <tr>
+                                        <td>
+                                            <%= index+1 %>
+                                        </td>
+                                        <td>
+                                            <%= url.shortId %>
+                                        </td>
+                                        <td>
+                                            <%= url.redirectURL %>
+                                        </td>
+                                        <td>
+                                            <%= url.visitHistory.length %>
+                                        </td>
+                                    </tr>
+                                    <%});%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <% } %>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 ShortURL. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
