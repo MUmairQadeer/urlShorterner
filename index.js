@@ -51,3 +51,5 @@ app.get("/:shortId", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is Started at port:${PORT}`)
 })
+
+module.exports = app;
